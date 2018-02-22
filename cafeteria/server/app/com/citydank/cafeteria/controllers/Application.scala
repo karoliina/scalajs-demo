@@ -2,7 +2,6 @@ package com.citydank.cafeteria.controllers
 
 import javax.inject._
 
-import com.citydank.cafeteria.shared.SharedMessages
 import play.api.mvc._
 
 @Singleton

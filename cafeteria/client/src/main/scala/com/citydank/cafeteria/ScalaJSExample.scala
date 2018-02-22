@@ -1,6 +1,5 @@
 package com.citydank.cafeteria
 
-import com.citydank.cafeteria.shared.SharedMessages
 import org.scalajs.dom
 
 object ScalaJSExample {
