@@ -152,7 +152,8 @@ object ScalaJSExample {
   }
 
   def submitSuggestion(dishName: String): Unit = {
-    // TODO: make API call
-    println(s"suggesting $dishName")
+    AjaxClient[Api].addDishSuggestion(dishName).call().map(res => {
+      println(s"Suggested $dishName, ${if (res) "success!" else "error!"}")
+    })
   }
 }
