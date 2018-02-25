@@ -15,6 +15,7 @@ import com.citydank.cafeteria.facades._
 
 object State {
   var date = new js.Date()
+  var showSuggestionsForm = false
 }
 
 object ScalaJSExample {
@@ -45,12 +46,27 @@ object ScalaJSExample {
       pickerEl.style.zIndex = "100"
     })
 
+    val suggestionsElement = div().render
+
+    val suggestionsButton = button(
+      cls := "mdc-button",
+      "Suggest New Dish"
+    ).render
+
+    suggestionsButton.onclick = (_) => {
+      // update the state variables, and re-render suggestions form and button
+      State.showSuggestionsForm = !State.showSuggestionsForm
+      suggestionsButton.innerHTML = if (State.showSuggestionsForm) "Hide Form" else "Suggest New Dish"
+      renderSuggestionsForm(suggestionsElement, State.showSuggestionsForm)
+    }
+
     val buttons = div(
       button(
         cls := "mdc-button",
         "Select Date",
         onclick := { () => picker.open() }
-      )
+      ),
+      suggestionsButton
     )
 
     val content = div(
@@ -58,7 +74,8 @@ object ScalaJSExample {
       h1("CityDank Cafeteria"),
       dateElement,
       menuElement,
-      buttons
+      buttons,
+      suggestionsElement
     )
 
     root.appendChild(content.render)
@@ -99,5 +116,43 @@ object ScalaJSExample {
       ),
       div(s"${dish.calories} kcal")
     )
+  }
+
+  def renderSuggestionsForm(suggestionsElement: html.Element, show: Boolean): Unit = {
+    suggestionsElement.innerHTML = ""
+
+    if (show) {
+      val inputEl = input(id := "inputBox").render
+
+      suggestionsElement.appendChild(
+        div(
+          div(
+            cls := "mdc-form-field mdc-form-field--align-end",
+            inputEl,
+            label(
+              `for` := "inputBox",
+              "Dish name"
+            )
+          ),
+          button(
+            cls := "mdc-button",
+            "Submit",
+            onclick := { () => {
+              if (inputEl.value.length > 0) {
+                submitSuggestion(inputEl.value)
+                inputEl.value = ""
+              }
+            }}
+          )
+        ).render
+      )
+    }
+
+    suggestionsElement.render
+  }
+
+  def submitSuggestion(dishName: String): Unit = {
+    // TODO: make API call
+    println(s"suggesting $dishName")
   }
 }
