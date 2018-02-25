@@ -35,11 +35,35 @@ object ScalaJSExample {
     AjaxClient[Api].menu(date.getFullYear(), date.getMonth() + 1, date.getDate()).call().map((menu: Menu) => {
       // empty menu element so we can append new children
       menuEl.innerHTML = ""
-      for (dish <- menu.dishes) menuEl.appendChild(div(dish.name).render)
+      for (dish <- menu.dishes) menuEl.appendChild(dishCard(dish).render)
       menuEl.render
 
       dateEl.innerHTML = s"${date.toDateString()}"
       dateEl.render
     })
+  }
+
+  def dishCard(dish: Dish) = {
+    val styledDiv = div(
+      backgroundColor := "lightblue",
+      border := "1px solid black",
+      borderRadius := "5px",
+      margin := 5,
+      padding := 10,
+      width := 250
+    )
+
+    val iconWithMargin = i(marginLeft := 5, marginRight := 5)
+
+    styledDiv(
+      div(b(dish.name)),
+      div(
+        iconWithMargin(cls := "far fa-thumbs-up"),
+        span(s"${dish.likes}"),
+        iconWithMargin(cls := "far fa-thumbs-down"),
+        span(s"${dish.dislikes}")
+      ),
+      div(s"${dish.calories} kcal")
+    )
   }
 }
